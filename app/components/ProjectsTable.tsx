@@ -4,7 +4,15 @@
 
 import * as React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Box, TextField, MenuItem, Select, InputLabel, FormControl, CircularProgress } from "@mui/material";
+import {
+  Box,
+  TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  CircularProgress,
+} from "@mui/material";
 import { useProjects, Project } from "../context/ProjectsContext";
 
 const statuses = ["active", "pending", "completed"];
@@ -14,15 +22,21 @@ export default function ProjectsTable() {
   const [filtered, setFiltered] = React.useState<Project[]>([]);
   const [search, setSearch] = React.useState("");
   const [status, setStatus] = React.useState("");
-  const [paginationModel, setPaginationModel] = React.useState({ page: 0, pageSize: 10 });
-  const [sortModel, setSortModel] = React.useState([{ field: "createdAt", sort: "desc" as const }]);
+  const [paginationModel, setPaginationModel] = React.useState({
+    page: 0,
+    pageSize: 10,
+  });
+  const [sortModel, setSortModel] = React.useState([
+    { field: "createdAt", sort: "desc" as const },
+  ]);
 
   React.useEffect(() => {
     let data = [...projects];
     if (search) {
       data = data.filter(
         (p) =>
-          p.title.toLowerCase().includes(search.toLowerCase()) || p.owner.toLowerCase().includes(search.toLowerCase())
+          p.title.toLowerCase().includes(search.toLowerCase()) ||
+          p.owner.toLowerCase().includes(search.toLowerCase())
       );
     }
     if (status) {
@@ -60,12 +74,20 @@ export default function ProjectsTable() {
     );
 
   return (
-    <Box sx={{ height: 600, width: "100%" }}>
+    <Box sx={{ height: 600, width: "100%", paddingTop: "30px" }}>
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-        <TextField label="Search by Title or Owner" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <TextField
+          label="Search by Title or Owner"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <FormControl sx={{ minWidth: 120 }}>
           <InputLabel>Status</InputLabel>
-          <Select value={status} label="Status" onChange={(e) => setStatus(e.target.value)}>
+          <Select
+            value={status}
+            label="Status"
+            onChange={(e) => setStatus(e.target.value)}
+          >
             <MenuItem value="">All</MenuItem>
             {statuses.map((s) => (
               <MenuItem key={s} value={s}>
