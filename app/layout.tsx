@@ -1,3 +1,5 @@
+/** @format */
+
 import * as React from "react";
 import { NextAppProvider } from "@toolpad/core/nextjs";
 import PersonIcon from "@mui/icons-material/Person";
@@ -18,11 +20,6 @@ const NAVIGATION: Navigation = [
     title: "Dashboard",
     icon: <DashboardIcon />,
   },
-  // {
-  //   segment: "orders",
-  //   title: "Orders",
-  //   icon: <ShoppingCartIcon />,
-  // },
   {
     segment: "employees",
     title: "Employees",
@@ -42,9 +39,7 @@ const AUTHENTICATION = {
   signOut,
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth();
   return (
     <html lang="en" data-toolpad-color-scheme="light">
@@ -53,14 +48,7 @@ export default async function RootLayout({
           <AppRouterCacheProvider options={{ enableCssLayer: true }}>
             <NextAppProvider
               branding={{
-                logo: (
-                  <img
-                    src="https://mui.com/static/logo.png"
-                    alt="MUI logo"
-                    width={40}
-                    height={50}
-                  />
-                ),
+                logo: <img src="https://mui.com/static/logo.png" alt="MUI logo" width={40} height={50} />,
                 title: "Project Management Dashboard",
               }}
               theme={theme}
