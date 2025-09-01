@@ -1,18 +1,18 @@
 import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github";
-import Google from "next-auth/providers/google";
+// import GitHub from "next-auth/providers/github";
+// import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import type { Provider } from "next-auth/providers";
 
 const providers: Provider[] = [
-  GitHub({
-    clientId: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  }),
-  Google({
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  }),
+  // GitHub({
+  //   clientId: process.env.GITHUB_CLIENT_ID,
+  //   clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  // }),
+  // Google({
+  //   clientId: process.env.GOOGLE_CLIENT_ID,
+  //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  // }),
   Credentials({
     credentials: {
       email: { label: "Email Address", type: "email" },
@@ -31,13 +31,12 @@ const providers: Provider[] = [
   }),
 ];
 
-export const providerMap = providers.map((provider) => {
-  if (typeof provider === "function") {
-    const providerData = provider();
-    return { id: providerData.id, name: providerData.name };
-  }
-  return { id: provider.id, name: provider.name };
-});
+// Keep provider map for UI display (buttons will show but won't function)
+export const providerMap = [
+  { id: "github", name: "GitHub" },
+  { id: "google", name: "Google" },
+  { id: "credentials", name: "Credentials" },
+];
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers,
