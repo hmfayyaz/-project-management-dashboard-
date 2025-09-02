@@ -12,13 +12,20 @@ import {
   InputLabel,
   FormControl,
   CircularProgress,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { useProjects, Project } from "../context/ProjectsContext";
+import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from "uuid";
 
 const statuses = ["active", "pending", "completed"];
 
 export default function ProjectsTable() {
-  const { projects, loading } = useProjects();
+  const { projects, setProjects, loading } = useProjects(); // ✅ added setProjects
   const [filtered, setFiltered] = React.useState<Project[]>([]);
   const [search, setSearch] = React.useState("");
   const [status, setStatus] = React.useState("");
@@ -29,6 +36,17 @@ export default function ProjectsTable() {
   const [sortModel, setSortModel] = React.useState([
     { field: "createdAt", sort: "desc" as const },
   ]);
+
+  const router = useRouter();
+
+  // 🔹 Dialog state
+  const [open, setOpen] = React.useState(false);
+  const [newProject, setNewProject] = React.useState({
+    title: "",
+    owner: "",
+    status: "",
+    description: "",
+  });
 
   React.useEffect(() => {
     let data = [...projects];
@@ -59,24 +77,53 @@ export default function ProjectsTable() {
     paginationModel.page * paginationModel.pageSize + paginationModel.pageSize
   );
 
+  // 🔹 Handlers
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setNewProject({ ...newProject, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    if (!newProject.title || !newProject.owner || !newProject.status) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    const projectToAdd: Project = {
+      id: uuidv4(), // convert number → string
+      title: newProject.title,
+      owner: newProject.owner,
+      status: newProject.status as "active" | "pending" | "completed", // cast
+      description: newProject.description,
+      createdAt: new Date().toISOString(),
+    };
+
+    setProjects([...projects, projectToAdd]); // ✅ update global context
+    setNewProject({ title: "", owner: "", status: "", description: "" });
+    handleClose();
+  };
+
   if (loading)
     return (
       <Box
         sx={{
-          height: 600, // keeps the same table height
+          height: 600,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <CircularProgress color="primary" /> {/* blue spinner */}
+        <CircularProgress color="primary" />
       </Box>
     );
 
   return (
-    <Box
-      sx={{ height: 600, width: "100%", paddingTop: "30px", margin: "0 56px" }}
-    >
+    <Box sx={{ paddingTop: "30px", margin: "0 56px" }}>
+      {/* 🔹 Top controls */}
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <TextField
           label="Search by Title or Owner"
@@ -98,7 +145,19 @@ export default function ProjectsTable() {
             ))}
           </Select>
         </FormControl>
+
+        {/* 🔹 New Project Button */}
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ marginLeft: "auto" }}
+          onClick={handleOpen}
+        >
+          New Project
+        </Button>
       </Box>
+
+      {/* 🔹 DataGrid */}
       <DataGrid
         rows={paginatedRows}
         columns={columns}
@@ -110,7 +169,60 @@ export default function ProjectsTable() {
         sortingMode="server"
         sortModel={sortModel}
         getRowId={(row) => row.id}
+        onRowClick={(params) =>
+          router.push(`/projects/${String(params.row.id)}`)
+        }
+        disableColumnResize
       />
+
+      {/* 🔹 Dialog Form */}
+      <Dialog open={open} onClose={handleClose} fullWidth>
+        <DialogTitle>Create New Project</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            label="Title"
+            name="title"
+            fullWidth
+            required
+            value={newProject.title}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Owner"
+            name="owner"
+            fullWidth
+            required
+            value={newProject.owner}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Status"
+            name="status"
+            fullWidth
+            required
+            value={newProject.status}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            label="Description"
+            name="description"
+            fullWidth
+            multiline
+            value={newProject.description}
+            onChange={handleChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
