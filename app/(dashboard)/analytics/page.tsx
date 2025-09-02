@@ -1,12 +1,12 @@
 /** @format */
 
-import ProjectsTable from "@/app/components/ProjectsTable";
+import AnalyticsPage from "../../components/AnalyticsPage";
 import { ProjectsProvider } from "@/app/context/ProjectsContext";
 
-export default function ProjectsPage() {
+export default function Analytics() {
   return (
     <ProjectsProvider>
-      <ProjectsTable />
+      <AnalyticsPage />
     </ProjectsProvider>
   );
 }

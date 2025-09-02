@@ -32,6 +32,11 @@ const NAVIGATION: Navigation = [
     icon: <PersonIcon />,
     pattern: "projects{/:projectId}*",
   },
+  {
+    segment: "analytics", // ✅ New route
+    title: "Analytics",
+    icon: <ShoppingCartIcon />, // pick any icon you like (e.g., InsightsIcon, BarChartIcon)
+  },
 ];
 
 const AUTHENTICATION = {
@@ -39,7 +44,9 @@ const AUTHENTICATION = {
   signOut,
 };
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const session = await auth();
   return (
     <html lang="en" data-toolpad-color-scheme="light">
@@ -48,7 +55,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <AppRouterCacheProvider options={{ enableCssLayer: true }}>
             <NextAppProvider
               branding={{
-                logo: <img src="https://mui.com/static/logo.png" alt="MUI logo" width={40} height={50} />,
+                logo: (
+                  <img
+                    src="https://mui.com/static/logo.png"
+                    alt="MUI logo"
+                    width={40}
+                    height={50}
+                  />
+                ),
                 title: "Project Management Dashboard",
               }}
               theme={theme}

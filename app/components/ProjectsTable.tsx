@@ -74,7 +74,9 @@ export default function ProjectsTable() {
     );
 
   return (
-    <Box sx={{ height: 600, width: "100%", paddingTop: "30px" }}>
+    <Box
+      sx={{ height: 600, width: "100%", paddingTop: "30px", margin: "0 56px" }}
+    >
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <TextField
           label="Search by Title or Owner"
